@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="page-title">Reports</h1>
+<p class="text-muted">Aggregated reports with charts, date filters, and CSV export.</p>
+<div class="row g-4 mt-1">
+    <div class="col-md-6 col-xl-3"><a class="report-card" href="/reports/sales"><strong>Sales Report</strong><span>Revenue, tax, discounts, recent sales</span></a></div>
+    <div class="col-md-6 col-xl-3"><a class="report-card" href="/reports/inventory"><strong>Inventory Report</strong><span>Stock, reorder alerts, inventory value</span></a></div>
+    <div class="col-md-6 col-xl-3"><a class="report-card" href="/reports/purchase-orders"><strong>Purchase Orders</strong><span>Supplier orders by date and status</span></a></div>
+    <div class="col-md-6 col-xl-3"><a class="report-card" href="/reports/returns"><strong>Returns Report</strong><span>Return totals and reasons</span></a></div>
+</div>
+{% endblock %}

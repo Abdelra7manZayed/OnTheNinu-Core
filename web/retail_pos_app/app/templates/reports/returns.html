@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+    {% block content %}
+    <h1 class="page-title">Returns Report</h1>
+
+<form class="card card-body mb-3" method="get">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4"><label class="form-label">Start date</label><input class="form-control" type="date" name="start_date" value="{{ start_date }}"></div>
+        <div class="col-md-4"><label class="form-label">End date</label><input class="form-control" type="date" name="end_date" value="{{ end_date }}"></div>
+        <div class="col-md-4 d-grid d-md-flex gap-2"><button class="btn btn-primary" type="submit">Apply</button><a class="btn btn-outline-secondary" href="?export=csv{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">Export CSV</a></div>
+    </div>
+</form>
+
+    <div class="card mb-3"><div class="card-header">Returns by Reason</div><div class="card-body"><canvas id="returnChart" height="100"></canvas></div></div>
+    <div class="card"><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Date</th><th>Sale</th><th>Customer</th><th>Total Return</th><th>Reason</th></tr></thead><tbody>{% for r in rows %}<tr><td>#{{ r.id }}</td><td>{{ r.return_date }}</td><td>#{{ r.sale_id }}</td><td>{{ r.customer }}</td><td>{{ r.total_return }}</td><td>{{ r.reason }}</td></tr>{% endfor %}</tbody></table></div></div>
+    {% endblock %}
+    {% block scripts %}<script>const returnReasons = {{ by_reason|tojson }}; new Chart(document.getElementById('returnChart'), { type: 'bar', data: { labels: returnReasons.map(x=>x.reason), datasets:[{label:'Amount', data:returnReasons.map(x=>x.amount)}] } });</script>{% endblock %}

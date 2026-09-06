@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="page-title">Inventory Report</h1>
+<form class="card card-body mb-3" method="get">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4"><label class="form-label">Filter</label><select class="form-select" name="only_low_stock"><option value="0" {% if not only_low_stock %}selected{% endif %}>All products</option><option value="1" {% if only_low_stock %}selected{% endif %}>Low stock only</option></select></div>
+        <div class="col-md-8 d-grid d-md-flex gap-2"><button class="btn btn-primary">Apply</button><a class="btn btn-outline-secondary" href="?export=csv&only_low_stock={{ only_low_stock }}">Export CSV</a></div>
+    </div>
+</form>
+<div class="card mb-3"><div class="card-header">Inventory Value by Category</div><div class="card-body"><canvas id="inventoryChart" height="100"></canvas></div></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Product</th><th>Category</th><th>Supplier</th><th>Barcode</th><th>Cost</th><th>Price</th><th>Stock</th><th>Reorder</th><th>Status</th></tr></thead><tbody>{% for r in rows %}<tr><td>#{{ r.id }}</td><td>{{ r.product_name }}</td><td>{{ r.category }}</td><td>{{ r.supplier }}</td><td>{{ r.barcode }}</td><td>{{ r.cost_price }}</td><td>{{ r.sell_price }}</td><td>{{ r.stock_qty }}</td><td>{{ r.reorder_level }}</td><td><span class="badge {% if r.status == 'Low stock' %}bg-danger-soft{% else %}bg-success-soft{% endif %}">{{ r.status }}</span></td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}
+{% block scripts %}<script>const catValues = {{ category_values|tojson }}; new Chart(document.getElementById('inventoryChart'), { type: 'bar', data: { labels: catValues.map(x=>x.category), datasets:[{label:'Inventory value', data:catValues.map(x=>x.inventory_value)}] } });</script>{% endblock %}

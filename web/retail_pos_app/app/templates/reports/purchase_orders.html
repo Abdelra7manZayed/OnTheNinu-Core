@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+    {% block content %}
+    <h1 class="page-title">Purchase Orders Report</h1>
+
+<form class="card card-body mb-3" method="get">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4"><label class="form-label">Start date</label><input class="form-control" type="date" name="start_date" value="{{ start_date }}"></div>
+        <div class="col-md-4"><label class="form-label">End date</label><input class="form-control" type="date" name="end_date" value="{{ end_date }}"></div>
+        <div class="col-md-4 d-grid d-md-flex gap-2"><button class="btn btn-primary" type="submit">Apply</button><a class="btn btn-outline-secondary" href="?export=csv{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">Export CSV</a></div>
+    </div>
+</form>
+
+    <div class="card mb-3"><div class="card-header">Orders by Status</div><div class="card-body"><canvas id="poChart" height="100"></canvas></div></div>
+    <div class="card"><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Order Date</th><th>Expected</th><th>Supplier</th><th>Employee</th><th>Total</th><th>Status</th></tr></thead><tbody>{% for r in rows %}<tr><td>#{{ r.id }}</td><td>{{ r.order_date }}</td><td>{{ r.expected_date }}</td><td>{{ r.supplier }}</td><td>{{ r.employee }}</td><td>{{ r.total_amount }}</td><td>{{ r.status_po }}</td></tr>{% endfor %}</tbody></table></div></div>
+    {% endblock %}
+    {% block scripts %}<script>const poStatus = {{ by_status|tojson }}; new Chart(document.getElementById('poChart'), { type: 'bar', data: { labels: poStatus.map(x=>x.status), datasets:[{label:'Orders', data:poStatus.map(x=>x.count)}] } });</script>{% endblock %}

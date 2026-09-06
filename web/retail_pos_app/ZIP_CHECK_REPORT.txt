@@ -1,0 +1,52 @@
+Retail POS App ZIP Check Report
+
+Status: Checked and complete.
+
+Required root files:
+- README.md
+- requirements.txt
+- .env.example
+- RUN_FIRST_TIME.bat
+- RUN_AFTER_FIRST_TIME.bat
+- retail_pos.db
+- PROJECT_ANALYSIS.md
+- VALIDATION_REPORT.md
+- SQLSERVER_SCHEMA_NOTES.md
+
+Required app files:
+- app/main.py
+- app/database.py
+- app/models.py
+- app/schemas.py
+- app/crud.py
+- app/auth.py
+- app/table_config.py
+- app/routes/auth_routes.py
+- app/routes/web.py
+- app/routes/api.py
+- app/routes/reports.py
+- app/templates/base.html
+- app/templates/login.html
+- app/templates/dashboard.html
+- app/templates/error.html
+- app/templates/generic/list.html
+- app/templates/generic/form.html
+- app/templates/reports/index.html
+- app/templates/reports/sales.html
+- app/templates/reports/inventory.html
+- app/templates/reports/purchase_orders.html
+- app/templates/reports/returns.html
+- app/static/css/styles.css
+- app/static/css/bootstrap.min.css
+- app/static/js/app.js
+- app/static/js/bootstrap.bundle.min.js
+- app/static/js/chart.umd.min.js
+
+Required scripts/schema files:
+- scripts/init_db.py
+- scripts/seed_data.py
+- scripts/check_db.py
+- scripts/retail_pos_erd_aligned_sqlite_schema_seed.sql
+- scripts/retail_pos_erd_aligned_sqlserver_schema_seed.sql
+
+No ERD or schema structure was changed in this check. The only code-level fix is using a stable SQLite database path inside the project folder and adding UI/menu fixes.

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+    {% block content %}
+    <h1 class="page-title">Sales Report</h1>
+
+<form class="card card-body mb-3" method="get">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4"><label class="form-label">Start date</label><input class="form-control" type="date" name="start_date" value="{{ start_date }}"></div>
+        <div class="col-md-4"><label class="form-label">End date</label><input class="form-control" type="date" name="end_date" value="{{ end_date }}"></div>
+        <div class="col-md-4 d-grid d-md-flex gap-2"><button class="btn btn-primary" type="submit">Apply</button><a class="btn btn-outline-secondary" href="?export=csv{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">Export CSV</a></div>
+    </div>
+</form>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-3"><div class="stat-card"><span>Sales</span><strong>{{ summary.sale_count or 0 }}</strong></div></div>
+        <div class="col-md-3"><div class="stat-card"><span>Revenue</span><strong>{{ summary.revenue or 0 }}</strong></div></div>
+        <div class="col-md-3"><div class="stat-card"><span>Average Sale</span><strong>{{ summary.avg_sale or 0 }}</strong></div></div>
+        <div class="col-md-3"><div class="stat-card"><span>Discounts</span><strong>{{ summary.discounts or 0 }}</strong></div></div>
+    </div>
+    <div class="card mb-3"><div class="card-header">Daily Revenue</div><div class="card-body"><canvas id="salesReportChart" height="100"></canvas></div></div>
+    <div class="card"><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Date</th><th>Customer</th><th>Employee</th><th>Register</th><th>Total</th><th>Tax</th><th>Discount</th><th>Final</th></tr></thead><tbody>{% for r in rows %}<tr><td>#{{ r.id }}</td><td>{{ r.sale_date }}</td><td>{{ r.customer }}</td><td>{{ r.employee }}</td><td>{{ r.register_code }}</td><td>{{ r.total_amount }}</td><td>{{ r.tax_amount }}</td><td>{{ r.discount_amount }}</td><td>{{ r.final_amount }}</td></tr>{% endfor %}</tbody></table></div></div>
+    {% endblock %}
+    {% block scripts %}<script>const salesDaily = {{ daily|tojson }}; new Chart(document.getElementById('salesReportChart'), { type: 'line', data: { labels: salesDaily.map(x=>x.day), datasets:[{label:'Revenue', data:salesDaily.map(x=>x.total)}] } });</script>{% endblock %}

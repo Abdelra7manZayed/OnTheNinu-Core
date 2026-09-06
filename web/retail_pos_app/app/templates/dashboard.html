@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="text-muted">Live summary from the SQLite database.</p>
+    </div>
+    <a href="/reports" class="btn btn-primary">Open Reports</a>
+</div>
+
+<div class="row g-3 mb-4">
+    {% for label, value in counts.items() %}
+    <div class="col-sm-6 col-xl-2">
+        <div class="stat-card">
+            <span>{{ label }}</span>
+            <strong>{{ value }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header">Sales by Day</div>
+            <div class="card-body"><canvas id="salesChart" height="140"></canvas></div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header">Payment Mix</div>
+            <div class="card-body"><canvas id="paymentChart" height="140"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">Recent Sales</div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>ID</th><th>Date</th><th>Total</th></tr></thead>
+                    <tbody>
+                    {% for sale in recent_sales %}
+                        <tr><td>#{{ sale.id }}</td><td>{{ sale.sale_date }}</td><td>{{ '%.2f'|format(sale.final_amount) }} EGP</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">Low Stock Alerts</div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Product</th><th>Stock</th><th>Reorder</th></tr></thead>
+                    <tbody>
+                    {% for product in low_stock %}
+                        <tr><td>{{ product.product_name }}</td><td>{{ product.stock_qty }}</td><td>{{ product.reorder_level }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const salesByDay = {{ sales_by_day|tojson }};
+const paymentMix = {{ payment_mix|tojson }};
+new Chart(document.getElementById('salesChart'), {
+    type: 'line',
+    data: { labels: salesByDay.map(x => x.day), datasets: [{ label: 'Revenue', data: salesByDay.map(x => x.total) }] }
+});
+new Chart(document.getElementById('paymentChart'), {
+    type: 'bar',
+    data: { labels: paymentMix.map(x => x.method), datasets: [{ label: 'Amount', data: paymentMix.map(x => x.total) }] }
+});
+</script>
+{% endblock %}
